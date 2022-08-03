@@ -1,12 +1,22 @@
 package main
 
 import (
+    "flag"
 	"log"
 	"net/http"
 )
 
 func main() {
+    /* getting args configuration parameters
+     * setting addr flag. */
+    addr := flag.String("addr", "localhost:4000", "HTTP Network Address")
+    flag.Parse() // Getting the value for addr variable. Now addr points to the real value
+
     mux := http.NewServeMux()
+
+    /* Here we are chaining handlers in a mux (a special handler that calls
+    * another handlers.
+    */
     mux.HandleFunc("/", home)
     mux.HandleFunc("/create_object", createObject)
     mux.HandleFunc("/user", objectQuery)
@@ -17,8 +27,10 @@ func main() {
     mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
     // Start listen on :4000
-    log.Println("Start listening on port 4000")
-    err := http.ListenAndServe("localhost:4000", mux)
+    // addr is a pointer to the network address value. We need to dereference
+    // it using * operator
+    log.Printf("Start listening on port %s\n", *addr)
+    err := http.ListenAndServe(*addr, mux)
 
     // call os.exit(1) immediately after writing the message
     log.Fatal(err)
