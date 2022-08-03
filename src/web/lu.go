@@ -12,7 +12,7 @@ func main() {
     mux.HandleFunc("/user", objectQuery)
 
     // creating fileserver which deals 
-    fileServer := http.FileServer(http.Dir("ui/static/"))
+    fileServer := http.FileServer(http.Dir("./ui/static"))
     // set mux to handle with /static prefix
     mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
