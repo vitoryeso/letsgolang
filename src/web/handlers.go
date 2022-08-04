@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
 
-func createObject(response_writer http.ResponseWriter, request *http.Request) {
+func (app *Application) createObject(response_writer http.ResponseWriter, request *http.Request) {
 
     /*
         Handle with obj request using POST.
@@ -25,7 +24,7 @@ func createObject(response_writer http.ResponseWriter, request *http.Request) {
     // fmt.Fprintf(response_writer, "Creating object")
 }
 
-func objectQuery(resw http.ResponseWriter, req *http.Request) {
+func (app *Application) objectQuery(resw http.ResponseWriter, req *http.Request) {
     /*
         Object Query by id in the url.
     */
@@ -43,7 +42,7 @@ func objectQuery(resw http.ResponseWriter, req *http.Request) {
     fmt.Fprintf(resw, str)
 }
 
-func home(response_writer http.ResponseWriter, request *http.Request) {
+func (app *Application) home(response_writer http.ResponseWriter, request *http.Request) {
     if request.URL.Path != "/" {
         http.NotFound(response_writer, request)
         return
@@ -58,14 +57,14 @@ func home(response_writer http.ResponseWriter, request *http.Request) {
     template_set, err := template.ParseFiles(files...)
 
     if err != nil {
-        log.Println(err.Error())
+        app.errorLogger.Println(err.Error())
         http.Error(response_writer, "Internal Error.", 500)
     }
 
     err = template_set.Execute(response_writer, nil)
 
     if err != nil {
-        log.Println(err.Error())
+        app.errorLogger.Println(err.Error())
         http.Error(response_writer, "Internal Error.", 500)
     }
 }
